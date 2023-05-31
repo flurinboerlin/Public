@@ -18,31 +18,27 @@ import pandas as pd
 # This implies no perfect multicollinearity where Q_XX = [x_i x_i^T] is a positive-definite matrix in is equal to (3), exogeneity (2) and homoscedasticity (4)
 
 
-
-
-
 class my_regression:
-    def __init__(self, regression_equation:str, explanatory_variables:pd.DataFrame):
+    def __init__(self, regression_equation:str, data:pd.DataFrame):
 
-        assert type(dependent_variable).__name__ == 'DataFrame', f'Dependent variable argument is not a pandas data frame.'
-        assert type(explanatory_variables).__name__ == 'DataFrame', f'Explanatory variable argument is not a pandas data frame.'
+        assert type(data).__name__ == 'DataFrame', f'Explanatory variable argument is not a pandas data frame.'
 
         self.dependent_variable_name = dependent_variable_name
         self.y = dependent_variable
-        self.explanatory_variables = explanatory_variables
+        self.data = data
 
         if data_cleaning == 'yes':
             # Data cleaning
-            # Check for NAs. NA entries are deleted, dependent_variable and explanatory_variables data frames are aligned afterwards.
+            # Check for NAs. NA entries are deleted, dependent_variable and data data frames are aligned afterwards.
             self.y = self.y.dropna()
-            self.explanatory_variables.dropna()
+            self.data.dropna()
 
-            interesction_index = self.y.index.intersection(self.explanatory_variables.index)
+            interesction_index = self.y.index.intersection(self.data.index)
             self.y = self.y.loc[interesction_index, :]
-            self.explanatory_variables = self.explanatory_variables.loc[interesction_index, :]
+            self.data = self.data.loc[interesction_index, :]
 
-        self.intercept = pd.Series(np.ones(shape = (self.explanatory_variables.shape[0])), name = 'intercept', index = self.explanatory_variables.index)
-        self.X = pd.concat([pd.DataFrame(self.intercept), self.explanatory_variables], axis = 1)
+        self.intercept = pd.Series(np.ones(shape = (self.data.shape[0])), name = 'intercept', index = self.data.index)
+        self.X = pd.concat([pd.DataFrame(self.intercept), self.data], axis = 1)
 
         # Running regression
         # Derivation of OLS. \y signifies a matrix of y_i where \y = Sum_i=1^N y_i. \y has dimensions 1xN, \X has dimensions MxN where M<N, \X^T is the transpose of \X
@@ -128,33 +124,4 @@ class my_regression:
 
         print(f'The name of the dependent variable is {dependent_variable_name}.')
     def calculate_betas(self):
-        return(self.dependent_variable + self.explanatory_variables)
-
-# unemployment_rate = fred.get_series('UNRATE')
-# ON_rate = fred.get_series('DFF')
-# spx = fred.get_series('SP500')
-
-
-unemployment_rate = pd.read_csv('C:/temp/unemployment.csv')
-ON_rate = pd.read_csv('C:/temp/ON_rate.csv', index_col=0)
-spx = pd.read_csv('C:/temp/spx.csv', index_col=0)
-spx_diff = spx.diff(axis = 0)
-
-# FB: Align series based on index which contains daily dates
-spx_diff = spx_diff[[x in ON_rate.index for x in spx_diff.index]]
-ON_rate = ON_rate[[x in spx_diff.index for x in ON_rate.index]]
-
-
-dependent_variable = pd.DataFrame([1,2,3,4,5,6,7,8,9,10])
-explanatory_variable = pd.DataFrame([3,5,7,9,11,12.5,15,17,20,21])
-regression = my_regression(dependent_variable_name='test', dependent_variable=dependent_variable, explanatory_variables=explanatory_variable)
-
-
-print(regression.calculate_betas())
-print(regression.dependent_variable_name)
-print(regression.__dict__)
-
-
-# test
-
-print('hello')
+        return(self.dependent_variable + self.data)
