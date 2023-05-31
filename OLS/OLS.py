@@ -1,9 +1,5 @@
-import matplotlib.pyplot as plt
 import numpy as np
-from fredapi import Fred
-fred = Fred(api_key = 'XX')
 import pandas as pd
-# import scipy as sp
 
 
 # Assumptions of OLS
@@ -26,7 +22,7 @@ import pandas as pd
 
 
 class my_regression:
-    def __init__(self, dependent_variable_name:str, dependent_variable:pd.DataFrame, explanatory_variables:pd.DataFrame, ts_errors:str = 'no', data_cleaning = 'no'):
+    def __init__(self, regression_equation:str, explanatory_variables:pd.DataFrame):
 
         assert type(dependent_variable).__name__ == 'DataFrame', f'Dependent variable argument is not a pandas data frame.'
         assert type(explanatory_variables).__name__ == 'DataFrame', f'Explanatory variable argument is not a pandas data frame.'
