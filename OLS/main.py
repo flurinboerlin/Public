@@ -1,4 +1,4 @@
-from OLS import my_regression
+from Functions.OLS import my_regression
 # from 01_Functions.OLS.py import my_regression
 import numpy as np
 import pandas as pd
