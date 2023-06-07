@@ -54,8 +54,8 @@ class my_regression:
         # Note that here we can directly see the necessity of OLS assumption (3). If (3) does not hold, (\X^T \X)^-1 cannot be computed because the inverse of a matrix
         # can only be computed if your matrix is a square matrix. If \X has full column rank, this implies that \X^T \X is a square matrix.
         X = np.array(self.X)
-        betas_hat = np.squeeze(np.matmul(np.linalg.inv(np.matmul(np.transpose(X), X)), np.matmul(np.transpose(X), np.array(self.Y))))
-
+        Y = np.array(self.Y)
+        betas_hat = np.linalg.inv(X.T @ X) @ X.T @ Y
 
 
 
@@ -74,14 +74,14 @@ class my_regression:
 
 
         # FB: Model expected y given explanatory variable values as per regression betas
-        y_hat = np.matmul(X, betas_hat)
+        y_hat = X @ betas_hat
         # FB: Get the empirical error terms
-        u_hat = np.array(y_hat - self.Y)
+        u_hat = y_hat - Y
         
         # FB: Compute inverse of design matrix X'X once and then re-use it since it is computationally expensive.
-        xInv = np.linalg.inv(np.matmul(np.transpose(X), X))
+        xInv = np.linalg.inv(X.T @ X)
         # FB: Compute empirical variance given by 1/(n_observations - n_regressors) * residuals. This is \sigma^2.
-        var_hat = np.array(1/(len(u_hat)-X.shape[1])*np.sum(u_hat**2))
+        var_hat = 1/(len(u_hat)-X.shape[1])*np.sum(u_hat**2)
         var_betas = np.multiply(var_hat, xInv)
         standard_errors = np.sqrt(np.diag(var_betas))
 
